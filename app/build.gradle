@@ -54,6 +54,7 @@ dependencies {
     // V2: Endpoints Framework v2 migration
     endpointsServer project(path: ':backend', configuration: 'endpoints')
     implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'org.greenrobot:eventbus:3.0.0'
 
     freeCompile 'com.google.android.gms:play-services-ads:12.0.0'
 

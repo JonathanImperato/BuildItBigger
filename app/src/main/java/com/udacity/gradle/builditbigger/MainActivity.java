@@ -27,7 +27,8 @@ import java.io.IOException;
 public class MainActivity extends AppCompatActivity {
 
     private InterstitialAd mInterstitialAd;
-    public ProgressBar spinner;
+    public static ProgressBar spinner;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
             adView.setVisibility(View.GONE);
         }
 
-        spinner = (ProgressBar)findViewById(R.id.progressBar1);
+        spinner = (ProgressBar) findViewById(R.id.progressBar1);
         spinner.setVisibility(View.GONE);
         mInterstitialAd = new InterstitialAd(this);
         mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
@@ -68,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void tellJoke(View view) {
-        if (BuildConfig.FLAVOR.equals("free")){
+        if (BuildConfig.FLAVOR.equals("free")) {
             mInterstitialAd.show();
             mInterstitialAd.setAdListener(new AdListener() {
                 @Override
@@ -98,29 +99,24 @@ public class MainActivity extends AppCompatActivity {
                     new EndpointsAsyncTask().execute(MainActivity.this);
                 }
             });
-        }else {
+        } else {
             new EndpointsAsyncTask().execute(this);
         }
     }
 
-    class EndpointsAsyncTask extends AsyncTask<Context, Void, String> {
+    static class EndpointsAsyncTask extends AsyncTask<Context, Void, String> {
         private JokeApi myApiService = null;
         private Context context;
+        public testCallback mCallback;
 
+        public interface testCallback {
+            public void onTaskCompleted(String result);
+        }
 
         @Override
         protected String doInBackground(Context... contexts) {
-            if (myApiService == null) {  // Only do this once
-                JokeApi.Builder builder = new JokeApi.Builder(AndroidHttp.newCompatibleTransport(),
-                        new AndroidJsonFactory(), null)
-                        .setRootUrl("http://10.0.2.2:8080/_ah/api/")
-                        .setGoogleClientRequestInitializer(new GoogleClientRequestInitializer() {
-                            @Override
-                            public void initialize(AbstractGoogleClientRequest<?> abstractGoogleClientRequest) throws IOException {
-                                abstractGoogleClientRequest.setDisableGZipContent(true);
-                            }
-                        });
-                myApiService = builder.build();
+            if (myApiService == null) {
+                myApiService = buildGCE.buildApi();
             }
 
             context = contexts[0];
@@ -134,10 +130,31 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
+            mCallback.onTaskCompleted(result);
             Intent jokeIntent = new Intent(context, DisplayJokeActivity.class);
             jokeIntent.putExtra(DisplayJokeActivity.INTENT_EXTRA_NAME, result);
             spinner.setVisibility(View.GONE);
             context.startActivity(jokeIntent);
         }
+    }
+
+    static class buildGCE {
+
+        public static JokeApi buildApi() { // Only do this once
+            JokeApi myApiService;
+            JokeApi.Builder builder = new JokeApi.Builder(AndroidHttp.newCompatibleTransport(),
+                    new AndroidJsonFactory(), null)
+                    .setRootUrl("http://10.0.2.2:8080/_ah/api/")
+                    .setGoogleClientRequestInitializer(new GoogleClientRequestInitializer() {
+                        @Override
+                        public void initialize(AbstractGoogleClientRequest<?> abstractGoogleClientRequest) throws IOException {
+                            abstractGoogleClientRequest.setDisableGZipContent(true);
+                        }
+                    });
+            myApiService = builder.build();
+
+            return myApiService;
+        }
+
     }
 }
