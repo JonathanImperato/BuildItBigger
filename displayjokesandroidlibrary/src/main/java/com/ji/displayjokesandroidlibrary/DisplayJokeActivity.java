@@ -1,16 +1,13 @@
 package com.ji.displayjokesandroidlibrary;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.widget.TextView;
 
 public class DisplayJokeActivity extends AppCompatActivity {
 
-    public final static String INTENT_JOKE = "INTENT_JOKE";
+    public final static String INTENT_EXTRA_NAME = "INTENT_EXTRA_NAME";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,7 +16,7 @@ public class DisplayJokeActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        String joke = getIntent().getStringExtra(INTENT_JOKE);
+        String joke = getIntent().getStringExtra(INTENT_EXTRA_NAME);
         TextView textViewJoke = (TextView) findViewById(R.id.textview_joke);
         textViewJoke.setText(joke);
     }

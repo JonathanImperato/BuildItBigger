@@ -31,10 +31,14 @@ dependencies {
     implementation 'com.google.api-client:google-api-client:1.23.0'
     implementation 'com.google.http-client:google-http-client-android:1.23.0'
 
+    implementation project(':JavaJokesLibrary')
+
 }
+
 // V2: Define deployment configuration using the new App Engine plugin
 // with the appengine closure
 appengine {  // App Engine tasks configuration
+    tools.cloudSdkHome = "/Users/jonathanimperato/Downloads/google-cloud-sdk"
     deploy {   // deploy configuration
 
         // The following is used for acceptance tests and
