@@ -30,7 +30,7 @@ public class StringTest {
 
     @Test
     public void testBackend() {
-        if (android.support.test.BuildConfig.FLAVOR.equals("paid")) { //the free one has the ads view on jokebtn click
+        if (BuildConfig.FLAVOR.equals("paid")) { //the free one has the ads view on jokebtn click
 
             Log.w("TEST", "STARTING TEST");
             onView(withId(R.id.jokebtn)).perform(click());
