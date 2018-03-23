@@ -1,22 +1,28 @@
 package com.udacity.gradle.builditbigger;
 
-import android.os.AsyncTask;
+import android.support.test.*;
 import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
-import android.text.TextUtils;
 import android.util.Log;
+
 
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.core.IsNot.not;
 
 
 @RunWith(AndroidJUnit4.class)
 @LargeTest
-public class StringTest implements MainActivity.EndpointsAsyncTask.testCallback {
+public class StringTest {
 
 
     @Rule
@@ -24,14 +30,14 @@ public class StringTest implements MainActivity.EndpointsAsyncTask.testCallback 
 
     @Test
     public void testBackend() {
-        AsyncTask task = new MainActivity.EndpointsAsyncTask();
-        task.execute(mActivityTestRule.getActivity());
-        Log.w("TEST", "STARTING TEST");
-    }
+        if (android.support.test.BuildConfig.FLAVOR.equals("paid")) { //the free one has the ads view on jokebtn click
 
-    @Override
-    public void onTaskCompleted(String result) {
-        Assert.assertFalse(TextUtils.isEmpty(result));
-        Log.w("TEST", "TEST FINISHED " + result);
+            Log.w("TEST", "STARTING TEST");
+            onView(withId(R.id.jokebtn)).perform(click());
+            //espresso automatically supports asynctask
+            //more info https://developer.android.com/reference/android/support/test/espresso/IdlingResource.html
+            onView(withId(R.id.textview_joke)).check(matches(not(withText(""))));
+            Log.w("TEST", "FINISHING TEST");
+        }
     }
 }

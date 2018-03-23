@@ -11,7 +11,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 
-
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 import com.google.api.client.googleapis.services.AbstractGoogleClientRequest;
@@ -19,21 +22,26 @@ import com.google.api.client.googleapis.services.GoogleClientRequestInitializer;
 import com.ji.displayjokesandroidlibrary.DisplayJokeActivity;
 import com.ji.gradle.builditbigger.backend.jokeApi.JokeApi;
 
-
 import java.io.IOException;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivityFree extends AppCompatActivity {
 
+    private InterstitialAd mInterstitialAd;
     public static ProgressBar spinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        AdView adView = findViewById(R.id.adView);
         spinner = (ProgressBar) findViewById(R.id.progressBar1);
         spinner.setVisibility(View.GONE);
+
+
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
 
     }
 
@@ -62,7 +70,36 @@ public class MainActivity extends AppCompatActivity {
 
     public void tellJoke(View view) {
 
-            new EndpointsAsyncTask().execute(this);
+        mInterstitialAd.show();
+        mInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                // Code to be executed when an ad finishes loading.
+            }
+
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+                // Code to be executed when an ad request fails.
+            }
+
+            @Override
+            public void onAdOpened() {
+                // Code to be executed when the ad is displayed.
+            }
+
+            @Override
+            public void onAdLeftApplication() {
+                // Code to be executed when the user has left the app.
+            }
+
+            @Override
+            public void onAdClosed() {
+                spinner.setVisibility(View.VISIBLE);
+                // Code to be executed when when the interstitial ad is closed.
+                new EndpointsAsyncTask().execute(MainActivityFree.this);
+            }
+        });
+
 
     }
 
