@@ -25,7 +25,7 @@ import com.ji.gradle.builditbigger.backend.jokeApi.JokeApi;
 import java.io.IOException;
 
 
-public class MainActivityFree extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
 
     private InterstitialAd mInterstitialAd;
     public static ProgressBar spinner;
@@ -96,7 +96,7 @@ public class MainActivityFree extends AppCompatActivity {
             public void onAdClosed() {
                 spinner.setVisibility(View.VISIBLE);
                 // Code to be executed when when the interstitial ad is closed.
-                new EndpointsAsyncTask().execute(MainActivityFree.this);
+                new EndpointsAsyncTask().execute(MainActivity.this);
             }
         });
 
