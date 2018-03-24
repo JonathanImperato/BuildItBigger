@@ -11,14 +11,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 
-
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 import com.google.api.client.googleapis.services.AbstractGoogleClientRequest;
 import com.google.api.client.googleapis.services.GoogleClientRequestInitializer;
 import com.ji.displayjokesandroidlibrary.DisplayJokeActivity;
 import com.ji.gradle.builditbigger.backend.jokeApi.JokeApi;
-
 
 import java.io.IOException;
 
@@ -62,56 +60,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void tellJoke(View view) {
 
-            new EndpointsAsyncTask().execute(this);
+        new EndpointsAsyncTask(this).execute(this);
 
     }
 
-    public static class EndpointsAsyncTask extends AsyncTask<Context, Void, String> {
-        private JokeApi myApiService = null;
-        private Context context;
 
 
-        @Override
-        protected String doInBackground(Context... contexts) {
-            if (myApiService == null) {
-                myApiService = buildGCE.buildApi();
-            }
-
-            context = contexts[0];
-
-            try {
-                return myApiService.getJoke().execute().getJokeText();
-            } catch (IOException e) {
-                return e.getMessage();
-            }
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            Intent jokeIntent = new Intent(context, DisplayJokeActivity.class);
-            jokeIntent.putExtra(DisplayJokeActivity.INTENT_EXTRA_NAME, result);
-            spinner.setVisibility(View.GONE);
-            context.startActivity(jokeIntent);
-        }
-    }
-
-    static class buildGCE {
-
-        public static JokeApi buildApi() { // Only do this once
-            JokeApi myApiService;
-            JokeApi.Builder builder = new JokeApi.Builder(AndroidHttp.newCompatibleTransport(),
-                    new AndroidJsonFactory(), null)
-                    .setRootUrl("http://10.0.2.2:8080/_ah/api/")
-                    .setGoogleClientRequestInitializer(new GoogleClientRequestInitializer() {
-                        @Override
-                        public void initialize(AbstractGoogleClientRequest<?> abstractGoogleClientRequest) throws IOException {
-                            abstractGoogleClientRequest.setDisableGZipContent(true);
-                        }
-                    });
-            myApiService = builder.build();
-
-            return myApiService;
-        }
-
-    }
 }

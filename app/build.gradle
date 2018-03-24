@@ -49,21 +49,14 @@ android {
         free {
             applicationId = "com.udacity.gradle.builditbigger.free"
             dimension "FlavDimens"
+            buildConfigField "String", "APP_VARIANT", "\"free\""
 
-            minSdkVersion 16
-            targetSdkVersion 26
-            versionCode 1
-            versionName "1.0"
         }
         paid {
-            //default appId is without suffix
+            buildConfigField "String", "APP_VARIANT", "\"main\""
             applicationId = "com.udacity.gradle.builditbigger"
             dimension "FlavDimens"
 
-            minSdkVersion 16
-            targetSdkVersion 26
-            versionCode 1
-            versionName "1.0"
         }
     }
 }
@@ -81,6 +74,10 @@ dependencies {
     implementation 'com.google.code.findbugs:jsr305:3.0.1'
     implementation project(':displayjokesandroidlibrary')
     implementation project(':JavaJokesLibrary')
+
+    androidTestImplementation 'com.android.support.test:runner:0.3'
+    androidTestImplementation 'com.android.support.test:rules:0.3'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-intents:2.2'
     androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
